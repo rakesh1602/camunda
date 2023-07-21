@@ -1,0 +1,6 @@
+D:\Development\camunda-project\Features\tasks\src\main\java\com\crossasyst\camunda\Application.java
+D:\Development\camunda-project\Features\tasks\src\main\java\com\crossasyst\camunda\delegates\BusinessRuleTaskDelegated.java
+D:\Development\camunda-project\Features\tasks\src\main\java\com\crossasyst\camunda\listeners\TaskListeners.java
+D:\Development\camunda-project\Features\tasks\src\main\java\com\crossasyst\camunda\listeners\ExecutionListeners.java
+D:\Development\camunda-project\Features\tasks\src\main\java\com\crossasyst\camunda\delegates\ScriptTaskDelegated.java
+D:\Development\camunda-project\Features\tasks\src\main\java\com\crossasyst\camunda\delegates\ServiceTaskDelegated.java
