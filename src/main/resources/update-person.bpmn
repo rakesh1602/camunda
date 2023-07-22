@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0d75ybi" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.13.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.19.0">
+  <bpmn:process id="update-person" name="update-person" isExecutable="true" camunda:historyTimeToLive="180">
+    <bpmn:startEvent id="StartEvent_1" name="start">
+      <bpmn:outgoing>Flow_1x8oz2l</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:serviceTask id="createPerson" name="updatePerson" camunda:class="com.crossasyst.camunda.crud.delegate.UpdatePersonDelegate">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="firstName">${firstName}</camunda:inputParameter>
+          <camunda:inputParameter name="lastName">${lastName}</camunda:inputParameter>
+          <camunda:inputParameter name="personid">${personid}</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1ogdakh</bpmn:incoming>
+      <bpmn:outgoing>Flow_0z1b7qf</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1x8oz2l" sourceRef="StartEvent_1" targetRef="user-task" />
+    <bpmn:userTask id="user-task" name="user-task" camunda:assignee="rakesh">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="firstName" label="First Name" type="string" />
+          <camunda:formField id="lastName" label="Last Name" type="string" />
+          <camunda:formField id="addressLineOne" label="Address line one" type="string">
+            <camunda:properties />
+          </camunda:formField>
+          <camunda:formField id="addressLineTwo" label="Address line two" type="string" />
+          <camunda:formField id="city" label="city" type="string" />
+          <camunda:formField id="state" label="state" type="string" />
+          <camunda:formField id="zipCode" label="zipcode" type="string" />
+          <camunda:formField id="personid" label="Person Id" type="long" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1x8oz2l</bpmn:incoming>
+      <bpmn:outgoing>Flow_1ogdakh</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_1ogdakh" sourceRef="user-task" targetRef="createPerson" />
+    <bpmn:endEvent id="Event_0k5pl1h" name="end">
+      <bpmn:incoming>Flow_0z1b7qf</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0z1b7qf" sourceRef="createPerson" targetRef="Event_0k5pl1h" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="update-person">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="179" y="99" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="186" y="142" width="22" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0s6j3mw_di" bpmnElement="createPerson">
+        <dc:Bounds x="480" y="90" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0b40ayx_di" bpmnElement="user-task">
+        <dc:Bounds x="280" y="100" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0k5pl1h_di" bpmnElement="Event_0k5pl1h">
+        <dc:Bounds x="682" y="112" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="691" y="155" width="19" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1x8oz2l_di" bpmnElement="Flow_1x8oz2l">
+        <di:waypoint x="215" y="117" />
+        <di:waypoint x="240" y="117" />
+        <di:waypoint x="240" y="140" />
+        <di:waypoint x="280" y="140" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ogdakh_di" bpmnElement="Flow_1ogdakh">
+        <di:waypoint x="380" y="140" />
+        <di:waypoint x="430" y="140" />
+        <di:waypoint x="430" y="130" />
+        <di:waypoint x="480" y="130" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0z1b7qf_di" bpmnElement="Flow_0z1b7qf">
+        <di:waypoint x="580" y="130" />
+        <di:waypoint x="682" y="130" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
