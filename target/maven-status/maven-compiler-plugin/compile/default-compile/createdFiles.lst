@@ -1,6 +1,0 @@
-com\crossasyst\camunda\Application.class
-com\crossasyst\camunda\delegates\ScriptTaskDelegated.class
-com\crossasyst\camunda\delegates\ServiceTaskDelegated.class
-com\crossasyst\camunda\listeners\TaskListeners.class
-com\crossasyst\camunda\delegates\BusinessRuleTaskDelegated.class
-com\crossasyst\camunda\listeners\ExecutionListeners.class
