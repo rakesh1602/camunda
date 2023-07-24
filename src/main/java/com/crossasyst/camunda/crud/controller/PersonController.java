@@ -32,7 +32,7 @@ public class PersonController {
         return new ResponseEntity<>(person, HttpStatus.OK);
     }
     
-    @PutMapping(value = "/persons/{personid}")
+    @PutMapping(value = "/persons/{personid}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Person> updatePerson(@PathVariable Long personid, @RequestBody Person person){
         person = personService.updatePerson(person, personid);
         return new ResponseEntity<>( person, HttpStatus.OK);

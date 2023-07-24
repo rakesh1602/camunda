@@ -3,6 +3,7 @@ package com.crossasyst.camunda.crud.delegate;
 import com.crossasyst.camunda.crud.model.Address;
 import com.crossasyst.camunda.crud.model.Person;
 import com.crossasyst.camunda.crud.service.PersonService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.log4j.Log4j2;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
@@ -17,10 +18,12 @@ import java.util.List;
 public class CreatePersonDelegate implements JavaDelegate {
 
     private final PersonService personService;
+    private final ObjectMapper objectMapper;
 
     @Autowired
-    public CreatePersonDelegate(PersonService personService) {
+    public CreatePersonDelegate(PersonService personService, ObjectMapper objectMapper) {
         this.personService = personService;
+        this.objectMapper = objectMapper;
     }
 
     @Override
@@ -28,26 +31,8 @@ public class CreatePersonDelegate implements JavaDelegate {
         log.info("Inside create person delegate method.");
         log.info("Delegate values {} ", delegateExecution.getVariables());
 
-        String firstName = (String) delegateExecution.getVariable("firstName");
-        String lastName = (String) delegateExecution.getVariable("lastName");
-
-        Person person = new Person();
-        person.setFirstName(firstName);
-        person.setLastName(lastName);
-
-        String addressLineOne = (String) delegateExecution.getVariable("addressLineOne");
-        String addressLineTwo = (String) delegateExecution.getVariable("addressLineTwo");
-        String city = (String) delegateExecution.getVariable("city");
-        String state = (String) delegateExecution.getVariable("state");
-        String zipCode = (String) delegateExecution.getVariable("zipCode");
-
-        // Create the Address object using the process variables
-        Address address = new Address();
-        address.setAddressLineOne(addressLineOne);
-        address.setAddressLineTwo(addressLineTwo);
-        address.setCity(city);
-        address.setState(state);
-        address.setZipCode(zipCode);
+        Person person = objectMapper.convertValue(delegateExecution.getVariables(), Person.class);
+        Address address = objectMapper.convertValue(delegateExecution.getVariables(), Address.class);
 
         // Get the existing list of addresses from the Person object or create a new list if it's null
         List<Address> addresses = person.getAddress();
@@ -61,7 +46,6 @@ public class CreatePersonDelegate implements JavaDelegate {
         // Set the updated list of addresses in the Person object
         person.setAddress(addresses);
 
-        // Call the service method with the Person object
         personService.createPerson(person);
         log.info("Create person method using java delegates executed.");
     }

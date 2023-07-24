@@ -5,12 +5,7 @@
       <bpmn:outgoing>Flow_1x8oz2l</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:serviceTask id="createPerson" name="createPerson" camunda:class="com.crossasyst.camunda.crud.delegate.CreatePersonDelegate">
-      <bpmn:extensionElements>
-        <camunda:inputOutput>
-          <camunda:inputParameter name="firstName">${firstName}</camunda:inputParameter>
-          <camunda:inputParameter name="lastName">${lastName}</camunda:inputParameter>
-        </camunda:inputOutput>
-      </bpmn:extensionElements>
+      <bpmn:extensionElements />
       <bpmn:incoming>Flow_1ogdakh</bpmn:incoming>
       <bpmn:outgoing>Flow_0z1b7qf</bpmn:outgoing>
     </bpmn:serviceTask>
@@ -46,12 +41,12 @@
           <dc:Bounds x="186" y="142" width="22" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0b40ayx_di" bpmnElement="user-task">
-        <dc:Bounds x="280" y="100" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0s6j3mw_di" bpmnElement="createPerson">
         <dc:Bounds x="480" y="90" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0b40ayx_di" bpmnElement="user-task">
+        <dc:Bounds x="280" y="100" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0k5pl1h_di" bpmnElement="Event_0k5pl1h">
