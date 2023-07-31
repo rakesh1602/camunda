@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1tuoa58" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.13.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.19.0">
+  <bpmn:collaboration id="bank">
+    <bpmn:documentation>Create bank account of the user.</bpmn:documentation>
+    <bpmn:extensionElements />
+    <bpmn:participant id="Participant_0psgpr4" name="create bank account" processRef="bank-account" />
+  </bpmn:collaboration>
+  <bpmn:process id="bank-account" isExecutable="true" camunda:historyTimeToLive="180">
+    <bpmn:startEvent id="StartEvent_1" name="start">
+      <bpmn:outgoing>Flow_0xqwq37</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="user-details" name="User task of filling the user details." camunda:asyncAfter="true" camunda:assignee="Rakesh">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="firstName" label="Last Name" type="string" />
+          <camunda:formField id="lastName" label="Last Name" type="string" />
+          <camunda:formField id="middleName" label="Middle Name" type="string" />
+          <camunda:formField id="addressLineOne" label="Address Line 1" type="string" />
+          <camunda:formField id="addressLineTwo" label="Address Line 2" type="string" />
+          <camunda:formField id="city" label="City" type="string" />
+          <camunda:formField id="state" label="State" type="string" />
+          <camunda:formField id="contactNo" label="Contact Number" type="string" />
+          <camunda:formField id="documentNumber" label="Any Governement identification number" type="string">
+            <camunda:properties />
+            <camunda:validation />
+          </camunda:formField>
+          <camunda:formField id="accountType" label="Account type you want to open." type="string" defaultValue="Saving" />
+          <camunda:formField id="currentBalance" label="Amount to deposit" type="long" defaultValue="1000" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0xqwq37</bpmn:incoming>
+      <bpmn:outgoing>Flow_17etnsw</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="user-task-to-activate-account" name="User task of activating the account.">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="isActive" label="Tick if user wants to activate account" type="boolean" defaultValue="false" />
+        </camunda:formData>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="userResponse">${userResponse}</camunda:inputParameter>
+          <camunda:outputParameter name="isActive">${isActive}</camunda:outputParameter>
+          <camunda:outputParameter name="userResponse">${userResponse}</camunda:outputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1odzsdw</bpmn:incoming>
+      <bpmn:incoming>Flow_06zzh1h</bpmn:incoming>
+      <bpmn:outgoing>Flow_1hytd1c</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="retrives-user-response" name="Service task to retrive users response of activation." camunda:class="com.crossasyst.bank.delegates.PutIsActiveDelelgate">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="userResponse">${userResponse}</camunda:inputParameter>
+          <camunda:outputParameter name="accountStatus">${accountStatus}</camunda:outputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1hytd1c</bpmn:incoming>
+      <bpmn:outgoing>Flow_1omr9pc</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="Gateway_0j0fh05" name="Conditional check of users response.">
+      <bpmn:incoming>Flow_1omr9pc</bpmn:incoming>
+      <bpmn:outgoing>Flow_0ugrvt3</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0q4qoxr</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="account-not-activated" name="Account is not active.">
+      <bpmn:incoming>Flow_0q4qoxr</bpmn:incoming>
+      <bpmn:outgoing>Flow_1jpuvr0</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="user-details-service" name="Service task to get the user details and create user and its account." camunda:asyncAfter="true" camunda:class="com.crossasyst.bank.delegates.CreateUserDelegates">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:outputParameter name="userResponse">${userResponse}</camunda:outputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_17etnsw</bpmn:incoming>
+      <bpmn:outgoing>Flow_1odzsdw</bpmn:outgoing>
+      <bpmn:dataOutputAssociation id="DataOutputAssociation_0kmaubv">
+        <bpmn:targetRef>DataStoreReference_1yob96o</bpmn:targetRef>
+      </bpmn:dataOutputAssociation>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Activity_0o38xkj" name="Account created sucessfully." camunda:class="com.crossasyst.bank.delegates.CompleteProcessDelegate">
+      <bpmn:incoming>Flow_0ugrvt3</bpmn:incoming>
+      <bpmn:outgoing>Flow_1oo3b91</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:dataStoreReference id="DataStoreReference_1yob96o" name="User data" />
+    <bpmn:intermediateCatchEvent id="Event_0upzsdi" name="Timer event to remind user for activation">
+      <bpmn:incoming>Flow_1jpuvr0</bpmn:incoming>
+      <bpmn:outgoing>Flow_06zzh1h</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_0qx5cq2">
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">P1D</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:callActivity id="call-add-beneficary-process" name="Call add beneficary process." calledElement="add-beneficary-processes">
+      <bpmn:extensionElements />
+      <bpmn:incoming>Flow_1oo3b91</bpmn:incoming>
+    </bpmn:callActivity>
+    <bpmn:sequenceFlow id="Flow_0xqwq37" sourceRef="StartEvent_1" targetRef="user-details" />
+    <bpmn:sequenceFlow id="Flow_17etnsw" sourceRef="user-details" targetRef="user-details-service" />
+    <bpmn:sequenceFlow id="Flow_1odzsdw" sourceRef="user-details-service" targetRef="user-task-to-activate-account" />
+    <bpmn:sequenceFlow id="Flow_06zzh1h" sourceRef="Event_0upzsdi" targetRef="user-task-to-activate-account" />
+    <bpmn:sequenceFlow id="Flow_1hytd1c" sourceRef="user-task-to-activate-account" targetRef="retrives-user-response" />
+    <bpmn:sequenceFlow id="Flow_1omr9pc" sourceRef="retrives-user-response" targetRef="Gateway_0j0fh05" />
+    <bpmn:sequenceFlow id="Flow_0ugrvt3" name="True" sourceRef="Gateway_0j0fh05" targetRef="Activity_0o38xkj">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression" language="groovy">
+def accountStatus = execution.getVariable("accountStatus")
+
+if (accountStatus != null &amp;&amp; accountStatus == true) {
+    // Return the value of "accountStatus" if it's true
+    return accountStatus;
+} else {
+    return false;
+}
+</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0q4qoxr" name="False" sourceRef="Gateway_0j0fh05" targetRef="account-not-activated" />
+    <bpmn:sequenceFlow id="Flow_1jpuvr0" sourceRef="account-not-activated" targetRef="Event_0upzsdi" />
+    <bpmn:sequenceFlow id="Flow_1oo3b91" sourceRef="Activity_0o38xkj" targetRef="call-add-beneficary-process" />
+  </bpmn:process>
+  <bpmn:message id="Message_1q7ii18" name="activeStatus" />
+  <bpmn:message id="Message_3edas2u" name="fasle" />
+  <bpmn:message id="Message_1q6ldlh" name="false" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="bank">
+      <bpmndi:BPMNShape id="Participant_0psgpr4_di" bpmnElement="Participant_0psgpr4" isHorizontal="true">
+        <dc:Bounds x="160" y="80" width="1560" height="420" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="210" y="272" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="217" y="315" width="22" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1rjb18k_di" bpmnElement="user-details">
+        <dc:Bounds x="301" y="250" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1lmb2t8_di" bpmnElement="user-task-to-activate-account">
+        <dc:Bounds x="750" y="190" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1jck61k_di" bpmnElement="retrives-user-response">
+        <dc:Bounds x="1010" y="190" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0j0fh05_di" bpmnElement="Gateway_0j0fh05" isMarkerVisible="true">
+        <dc:Bounds x="1275" y="205" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1337" y="220" width="88" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0kcd85s_di" bpmnElement="account-not-activated">
+        <dc:Bounds x="1360" y="310" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1chm7ju_di" bpmnElement="user-details-service">
+        <dc:Bounds x="520" y="250" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_08zahxv_di" bpmnElement="Activity_0o38xkj">
+        <dc:Bounds x="1360" y="120" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DataStoreReference_1yob96o_di" bpmnElement="DataStoreReference_1yob96o">
+        <dc:Bounds x="545" y="395" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="546" y="452" width="49" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0h7wn7q_di" bpmnElement="Event_0upzsdi">
+        <dc:Bounds x="1092" y="402" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1074" y="445" width="75" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0rn98zw_di" bpmnElement="call-add-beneficary-process">
+        <dc:Bounds x="1530" y="210" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0xqwq37_di" bpmnElement="Flow_0xqwq37">
+        <di:waypoint x="246" y="290" />
+        <di:waypoint x="301" y="290" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_17etnsw_di" bpmnElement="Flow_17etnsw">
+        <di:waypoint x="401" y="290" />
+        <di:waypoint x="520" y="290" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1odzsdw_di" bpmnElement="Flow_1odzsdw">
+        <di:waypoint x="620" y="290" />
+        <di:waypoint x="800" y="290" />
+        <di:waypoint x="800" y="270" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_06zzh1h_di" bpmnElement="Flow_06zzh1h">
+        <di:waypoint x="1092" y="420" />
+        <di:waypoint x="840" y="420" />
+        <di:waypoint x="840" y="270" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1hytd1c_di" bpmnElement="Flow_1hytd1c">
+        <di:waypoint x="850" y="230" />
+        <di:waypoint x="1010" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1omr9pc_di" bpmnElement="Flow_1omr9pc">
+        <di:waypoint x="1110" y="230" />
+        <di:waypoint x="1275" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ugrvt3_di" bpmnElement="Flow_0ugrvt3">
+        <di:waypoint x="1300" y="205" />
+        <di:waypoint x="1300" y="160" />
+        <di:waypoint x="1360" y="160" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1304" y="180" width="23" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0q4qoxr_di" bpmnElement="Flow_0q4qoxr">
+        <di:waypoint x="1300" y="255" />
+        <di:waypoint x="1300" y="350" />
+        <di:waypoint x="1360" y="350" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1302" y="300" width="28" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1jpuvr0_di" bpmnElement="Flow_1jpuvr0">
+        <di:waypoint x="1410" y="390" />
+        <di:waypoint x="1410" y="420" />
+        <di:waypoint x="1128" y="420" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1oo3b91_di" bpmnElement="Flow_1oo3b91">
+        <di:waypoint x="1460" y="160" />
+        <di:waypoint x="1580" y="160" />
+        <di:waypoint x="1580" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DataOutputAssociation_0kmaubv_di" bpmnElement="DataOutputAssociation_0kmaubv">
+        <di:waypoint x="570" y="330" />
+        <di:waypoint x="570" y="395" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
