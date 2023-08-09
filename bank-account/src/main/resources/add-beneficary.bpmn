@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0126r8z" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.13.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.19.0">
+  <bpmn:collaboration id="add-beneficary-process">
+    <bpmn:participant id="add-beneficary" name="add-beneficary" processRef="add-beneficary-processes" />
+  </bpmn:collaboration>
+  <bpmn:process id="add-beneficary-processes" name="add-beneficary-process" isExecutable="true" camunda:historyTimeToLive="180">
+    <bpmn:startEvent id="Event_115d9c6" name="start">
+      <bpmn:outgoing>Flow_0hqm1c9</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_0hqm1c9" sourceRef="Event_115d9c6" targetRef="Activity_1l1rriy" />
+    <bpmn:sequenceFlow id="Flow_007lfxe" sourceRef="Activity_1l1rriy" targetRef="Activity_1g2us5q" />
+    <bpmn:serviceTask id="Activity_1g2us5q" name="Service task to add beneficary." camunda:class="delegates.com.crossasyst.camunda.bank.AddBeneficaryDelegates">
+      <bpmn:incoming>Flow_007lfxe</bpmn:incoming>
+      <bpmn:outgoing>Flow_06n7i09</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="Activity_1l1rriy" name="User task to add beneficary details.">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="beneficiaryAccountNo" label="Beneficary account number" type="long" />
+          <camunda:formField id="beneficiaryFullName" label="Beneficary full name" type="string" />
+          <camunda:formField id="beneficiaryIFSCCode" label="Beneficary IFSC Code" type="string" />
+          <camunda:formField id="beneficiaryAccountType" label="Beneficary account type" type="string" defaultValue="saving" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0hqm1c9</bpmn:incoming>
+      <bpmn:outgoing>Flow_007lfxe</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_06n7i09" sourceRef="Activity_1g2us5q" targetRef="Activity_0qtunz1" />
+    <bpmn:callActivity id="Activity_0qtunz1" name="Call fund transfer process" calledElement="transfer-fund-process">
+      <bpmn:incoming>Flow_06n7i09</bpmn:incoming>
+    </bpmn:callActivity>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="add-beneficary-process">
+      <bpmndi:BPMNShape id="Participant_0biukqr_di" bpmnElement="add-beneficary" isHorizontal="true">
+        <dc:Bounds x="180" y="120" width="700" height="250" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_115d9c6_di" bpmnElement="Event_115d9c6">
+        <dc:Bounds x="232" y="202" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="239" y="245" width="22" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1tjddic_di" bpmnElement="Activity_1g2us5q">
+        <dc:Bounds x="500" y="180" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_09hteae_di" bpmnElement="Activity_1l1rriy">
+        <dc:Bounds x="320" y="180" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0q9fxy7_di" bpmnElement="Activity_0qtunz1">
+        <dc:Bounds x="680" y="180" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0hqm1c9_di" bpmnElement="Flow_0hqm1c9">
+        <di:waypoint x="268" y="220" />
+        <di:waypoint x="320" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_007lfxe_di" bpmnElement="Flow_007lfxe">
+        <di:waypoint x="420" y="220" />
+        <di:waypoint x="500" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_06n7i09_di" bpmnElement="Flow_06n7i09">
+        <di:waypoint x="600" y="220" />
+        <di:waypoint x="680" y="220" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

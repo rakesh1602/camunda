@@ -1,0 +1,30 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/camunda
+    username: postgres
+    password: root
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+        use_sql_comments: true
+
+#camunda
+camunda.bpm.admin-user:
+  id: rakesh
+  password: Xasyst@2023#
+
+server:
+  port: 8081
+
+#urls
+bank:
+  accounts:
+    url:
+      base: localhost:8080
+      get-accounts: localhost:8080/accounts/{accountId}

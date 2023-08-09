@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0cyd4k0" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.13.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.19.0">
+  <bpmn:collaboration id="transfer-funds">
+    <bpmn:participant id="transfer-fund-participant" name="add funds to other bank account" processRef="transfer-fund-process" />
+  </bpmn:collaboration>
+  <bpmn:process id="transfer-fund-process" isExecutable="true" camunda:historyTimeToLive="180">
+    <bpmn:sequenceFlow id="Flow_1yk8glt" sourceRef="Activity_0amwwg3" targetRef="Event_0xuc4bl" />
+    <bpmn:sequenceFlow id="Flow_01odd5l" sourceRef="Activity_1dft48v" targetRef="Event_0qpi8mc" />
+    <bpmn:sequenceFlow id="Flow_19ju1f6" name="True" sourceRef="Gateway_1junt0r" targetRef="Activity_0amwwg3">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression" language="groovy">
+def status= execution.getVariable("status")
+
+if (status != null &amp;&amp; status== true) {
+    return status;
+} else {
+    return false;
+}
+</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0ni22pp" name="False" sourceRef="Gateway_1junt0r" targetRef="Activity_1dft48v" />
+    <bpmn:sequenceFlow id="Flow_0nz39m6" sourceRef="Activity_0cthikv" targetRef="Gateway_1junt0r" />
+    <bpmn:sequenceFlow id="Flow_1d5u9d1" sourceRef="user-task-to-fill-transfer-sheet" targetRef="Activity_0cthikv" />
+    <bpmn:sequenceFlow id="Flow_1ikaz0a" sourceRef="Event_0qpi8mc" targetRef="user-task-to-fill-transfer-sheet" />
+    <bpmn:sequenceFlow id="Flow_04b4mbd" sourceRef="Event_1fbsk0p" targetRef="user-task-to-fill-transfer-sheet" />
+    <bpmn:endEvent id="Event_0xuc4bl" name="end process">
+      <bpmn:incoming>Flow_1yk8glt</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:userTask id="Activity_0amwwg3" name="Fund transfer successfully completed.">
+      <bpmn:incoming>Flow_19ju1f6</bpmn:incoming>
+      <bpmn:outgoing>Flow_1yk8glt</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:intermediateThrowEvent id="Event_0qpi8mc" name="Return to fund transfer process.">
+      <bpmn:incoming>Flow_01odd5l</bpmn:incoming>
+      <bpmn:outgoing>Flow_1ikaz0a</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_1j7d392" />
+    </bpmn:intermediateThrowEvent>
+    <bpmn:userTask id="Activity_1dft48v" name="Failed to send money.">
+      <bpmn:incoming>Flow_0ni22pp</bpmn:incoming>
+      <bpmn:outgoing>Flow_01odd5l</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="Gateway_1junt0r">
+      <bpmn:incoming>Flow_0nz39m6</bpmn:incoming>
+      <bpmn:outgoing>Flow_0ni22pp</bpmn:outgoing>
+      <bpmn:outgoing>Flow_19ju1f6</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="Activity_0cthikv" name="Service task to complete fund transfer process." camunda:class="delegates.com.crossasyst.camunda.bank.TransferFundDelegates">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:outputParameter name="status">${status}</camunda:outputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1d5u9d1</bpmn:incoming>
+      <bpmn:outgoing>Flow_0nz39m6</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="user-task-to-fill-transfer-sheet" name="User task to fill fund transfer sheet.">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="senderAccountNumber" label="Your account number" type="long" />
+          <camunda:formField id="beneficiaryAccountNumber" label="Beneficary account number" type="long" />
+          <camunda:formField id="amount" label="Amount to be transffered" type="long" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_04b4mbd</bpmn:incoming>
+      <bpmn:incoming>Flow_1ikaz0a</bpmn:incoming>
+      <bpmn:outgoing>Flow_1d5u9d1</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:startEvent id="Event_1fbsk0p" name="start">
+      <bpmn:outgoing>Flow_04b4mbd</bpmn:outgoing>
+    </bpmn:startEvent>
+  </bpmn:process>
+  <bpmn:message id="Message_3r4cnls" name="Message_3r4cnls" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="transfer-funds">
+      <bpmndi:BPMNShape id="Participant_1137l98_di" bpmnElement="transfer-fund-participant" isHorizontal="true">
+        <dc:Bounds x="160" y="90" width="1410" height="340" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1fbsk0p_di" bpmnElement="Event_1fbsk0p">
+        <dc:Bounds x="222" y="192" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="229" y="235" width="22" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1yoz48s_di" bpmnElement="user-task-to-fill-transfer-sheet">
+        <dc:Bounds x="430" y="170" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_008fxht_di" bpmnElement="Activity_0cthikv">
+        <dc:Bounds x="700" y="170" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1junt0r_di" bpmnElement="Gateway_1junt0r" isMarkerVisible="true">
+        <dc:Bounds x="1025" y="185" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1scuops_di" bpmnElement="Activity_1dft48v">
+        <dc:Bounds x="1160" y="280" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1rm3vc3_di" bpmnElement="Event_0qpi8mc">
+        <dc:Bounds x="722" y="312" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="706" y="355" width="82" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0eszdp4_di" bpmnElement="Activity_0amwwg3">
+        <dc:Bounds x="1160" y="120" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0xuc4bl_di" bpmnElement="Event_0xuc4bl">
+        <dc:Bounds x="1462" y="142" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1450" y="185" width="61" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_04b4mbd_di" bpmnElement="Flow_04b4mbd">
+        <di:waypoint x="258" y="210" />
+        <di:waypoint x="430" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ikaz0a_di" bpmnElement="Flow_1ikaz0a">
+        <di:waypoint x="722" y="330" />
+        <di:waypoint x="480" y="330" />
+        <di:waypoint x="480" y="250" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1d5u9d1_di" bpmnElement="Flow_1d5u9d1">
+        <di:waypoint x="530" y="210" />
+        <di:waypoint x="700" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0nz39m6_di" bpmnElement="Flow_0nz39m6">
+        <di:waypoint x="800" y="210" />
+        <di:waypoint x="1025" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_19ju1f6_di" bpmnElement="Flow_19ju1f6">
+        <di:waypoint x="1050" y="185" />
+        <di:waypoint x="1050" y="160" />
+        <di:waypoint x="1160" y="160" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1055" y="143" width="23" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ni22pp_di" bpmnElement="Flow_0ni22pp">
+        <di:waypoint x="1050" y="235" />
+        <di:waypoint x="1050" y="320" />
+        <di:waypoint x="1160" y="320" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1052" y="275" width="28" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_01odd5l_di" bpmnElement="Flow_01odd5l">
+        <di:waypoint x="1210" y="360" />
+        <di:waypoint x="1210" y="390" />
+        <di:waypoint x="920" y="390" />
+        <di:waypoint x="920" y="330" />
+        <di:waypoint x="758" y="330" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1yk8glt_di" bpmnElement="Flow_1yk8glt">
+        <di:waypoint x="1260" y="160" />
+        <di:waypoint x="1462" y="160" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
